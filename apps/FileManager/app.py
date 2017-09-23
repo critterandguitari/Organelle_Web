@@ -27,6 +27,7 @@ config = { '/':
         }
 }
 base = '/files'
+name = 'File Manager'
 
 class Root():
 
