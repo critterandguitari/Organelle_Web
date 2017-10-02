@@ -3,14 +3,14 @@ import imp
 import helpers
 import homepage
 
-APPS_PATH = '/usbdrive/Organelle_Web/apps/'
+APPS_PATH = '../apps/'
 
 # global config
 cherrypy.config.update({    'environment': 'production',
                             'log.error_file': '/tmp/site.log',
                             'log.screen': True,
                             'server.socket_host': '0.0.0.0',
-                            'server.socket_port': 80,
+                            'server.socket_port': 8080,
                         })
 # load apps
 print "loading apps..."

@@ -1,11 +1,17 @@
 import cherrypy
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 config = { '/': 
         {
+        },
+        '/static/bootstrap.min.css': {
+            'tools.staticfile.on': True,
+            'tools.staticfile.filename': current_dir + '/static/bootstrap.min.css'
         }
 }
 base = '/'
-
 
 class Root(object):
     apps = None
@@ -13,8 +19,29 @@ class Root(object):
     def __init__(self, apps):
         self.apps = apps
         for app in apps : 
-            self.links += '<a href="'+app.base+'">'+app.name+'</a></br>'
+            self.links += '<a href="'+app.base+'" class="btn btn-default" role="button" style="margin:6px 0;">'+app.name+'</a></br>'
 
     @cherrypy.expose
     def index(self):
-        return "<html>Welcome to the Organelle Home </br>" + self.links + '</html>'
+        return """
+<html>
+<head>
+<link rel="stylesheet" href="/static/bootstrap.min.css">
+</head>
+<body>
+
+<div style="border:1px solid; border-radius: 6px; padding: 16px; width: 500px; margin:16px auto;">
+
+<h2>Welcome to the Organelle!<h2>
+
+<h3>Apps</h3>
+""" + self.links + """
+
+
+</div>
+
+</body>
+</html>
+"""
+
+
