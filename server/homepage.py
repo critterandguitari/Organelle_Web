@@ -9,12 +9,16 @@ config = { '/':
         '/static/bootstrap.min.css': {
             'tools.staticfile.on': True,
             'tools.staticfile.filename': current_dir + '/static/bootstrap.min.css'
+        },
+        '/static/fonts' : {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': current_dir + '/static/fonts'
         }
 }
 base = '/'
 
 class Root(object):
-    apps = None
+    nnapps = None
     links = ''
     def __init__(self, apps):
         self.apps = apps
@@ -34,10 +38,10 @@ class Root(object):
 
 <h2>Welcome to the Organelle!<h2>
 
-<h3>Apps</h3>
 """ + self.links + """
-
-
+<a href="#">
+<span style="font-size:4em;" class="glyphicon glyphicon-circle-arrow-right"></span>
+</a>
 </div>
 
 </body>

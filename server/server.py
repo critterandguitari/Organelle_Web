@@ -2,6 +2,7 @@ import cherrypy
 import imp 
 import helpers
 import homepage
+import traceback
 
 APPS_PATH = '../apps/'
 
