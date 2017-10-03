@@ -4,7 +4,7 @@ from os import walk, path
 import shutil
 import cherrypy
 
-BASE_DIR = "/usbdrive"
+BASE_DIR = "/Users/owen"
 
 #TODO don't return ok if error what the hell
 def download(path):

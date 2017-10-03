@@ -39,9 +39,6 @@ class Root(object):
 <h2>Welcome to the Organelle!<h2>
 
 """ + self.links + """
-<a href="#">
-<span style="font-size:4em;" class="glyphicon glyphicon-circle-arrow-right"></span>
-</a>
 </div>
 
 </body>
