@@ -21,8 +21,7 @@ def get_immediate_subdirectories(dir) :
 config = { '/': 
         {
  		'tools.staticdir.on': True,
-		#'tools.staticdir.dir': '/usbdrive/WebServer/app/static/fm/',
-		'tools.staticdir.dir': current_dir + '/static/fm/',
+		'tools.staticdir.dir': current_dir + '/static/',
 		'tools.staticdir.index': 'index.html',
         }
 }

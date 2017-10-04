@@ -2,11 +2,10 @@
 var appBaseURL = '/robot-control'
 var controlurl = appBaseURL + '/control'
 
-$(function () {
-    $("#control-fwd").click(function(){
-        console.log('fwd')
+function robotControl(dir){
+        console.log('moving')
         $.ajaxSetup({async: false});
-        $.get(controlurl+'?operation=move', { 'dir' : 'fwd' })
+        $.get(controlurl+'?operation=move', { 'dir' : dir })
         .done(function () {
             console.log('went fwd');
         })
@@ -14,14 +13,21 @@ $(function () {
             console.log('problem');
         });
         $.ajaxSetup({async: true});
+
+}
+
+
+$(function () {
+    $("#control-fwd").click(function(){
+	    robotControl('fwd')
     });
     $("#control-right").click(function(){
-        console.log('right')
+	    robotControl('right')
     });
     $("#control-left").click(function(){
-        console.log('left')
+	    robotControl('left')
     });
     $("#control-rev").click(function(){
-        console.log('rev')
+	    robotControl('rev')
     });
 });

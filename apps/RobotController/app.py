@@ -9,8 +9,12 @@ import socket
 from cherrypy.lib import static
 import imp
 
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
+Robot = imp.load_source('Robot', current_dir + '/Robot.py')
+LEFT_TRIM   = 0
+RIGHT_TRIM  = 0
+robot = Robot.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
+
 
 
 def get_immediate_subdirectories(dir) :
@@ -27,6 +31,8 @@ config = { '/':
 base = '/robot-control'
 name = 'Robot Controller'
 
+
+
 class Root():
 
     def tester(self, name):
@@ -39,9 +45,16 @@ class Root():
         ret = ''
         if 'operation' in data :
             cherrypy.response.headers['Content-Type'] = "application/json"
-            #if data['operation'] == 'get_node' :
-            return "cool"
-              
+            if data['operation'] == 'move' :
+                if data['dir'] == 'fwd' :
+                    robot.forward(150, .5)   
+                if data['dir'] == 'rev' :
+                    robot.reverse(150, .5) 
+                if data['dir'] == 'left' :
+                    robot.left(150, .5) 
+                if data['dir'] == 'right' :
+                   robot.right(150, .5) 
+            return "cool"  
         else :
             cherrypy.response.headers['Content-Type'] = "application/json"
             return "no operation specified"
