@@ -1,23 +1,20 @@
 import json
 import os
-from os import walk, path
 import shutil
 import cherrypy
 
-BASE_DIR = "/home/pi"
+BASE_DIR = "/"
+
+def check_path(path) :
+    path = os.path.normpath(path)
+    print path
+    if path.startswith("/usbdrive") or path.startswith("/sdcard") : return True
+    else : return False
 
 #TODO don't return ok if error what the hell
-def download(path):
-    path = BASE_DIR + path
-    dl = open(path, 'r').read()
-    cherrypy.response.headers['Content-Type'] = "application/octet-stream"
-    cherrypy.response.headers['Content-Disposition'] = "attachment"
-    return dl
-
 def rename(old, new):
     src = BASE_DIR + old 
-    dst = path.dirname(src) + '/' + new
-    #cherrypy.log("about to rename " + src + " to " + dst)
+    dst =os.path.dirname(src) + '/' + new
     os.rename(src, dst)
     return '{"ok":"ok"}'
 
@@ -34,7 +31,7 @@ def move(src, dst):
 
 def unzip(zip_path):
     zip_path = BASE_DIR + zip_path
-    zip_parent_folder = path.dirname(zip_path)
+    zip_parent_folder =os.path.dirname(zip_path)
     os.system("unzip -o \""+zip_path+"\" -d \""+zip_parent_folder+"\" -x '__MACOSX/*'")
     return '{"ok":"ok"}'
 
@@ -47,7 +44,7 @@ def zip(folder):
 def copy(src, dst):
     src = BASE_DIR + src
     dst = BASE_DIR + dst 
-    dstfinal = dst + '/' + path.basename(src)
+    dstfinal = dst + '/' + os.path.basename(src)
     if os.path.isfile(src) :
         shutil.copy(src, dst)
     if os.path.isdir(src) :
@@ -70,30 +67,40 @@ def get_node(fpath):
         return get_files(BASE_DIR + fpath)
 
 def file_to_dict(fpath):
-    fpath = fpath
     return {
-        'text': path.basename(fpath),
+        'name': os.path.basename(fpath),
         'children': False,
         'type': 'file',
-        'id': fpath.split(BASE_DIR,1)[1],
+        'path': fpath.split(BASE_DIR,1)[1],
         }
 
 def folder_to_dict(fpath):
-    fpath = fpath
     return {
-        'text': path.basename(fpath),
+        'name': os.path.basename(fpath),
         'children': True,
         'type': 'folder',
-        'id': fpath.split(BASE_DIR,1)[1],
+        'path': fpath.split(BASE_DIR,1)[1],
         }
 
 def get_files(rootpath):
-    root, folders, files = walk(rootpath).next()
-    #contents = {}
-    #contents['parent'] = rootpath.replace('/usbdrive/Patches/','')
+    root, folders, files = os.walk(rootpath).next()
     contents = []
-    contents  = [file_to_dict(path.sep.join([root, fpath])) for fpath in files if not fpath[0] == '.'] 
-    contents += [folder_to_dict(path.sep.join([root, fpath])) for fpath in folders if not fpath[0] == '.'] 
+
+    if root == "//" : root = "/"
+
+    # add to the list if they are cool
+    for folder in folders :
+        if not folder[0] == '.' :
+            path = os.path.join(root, folder)
+            if check_path(path):
+                contents += [folder_to_dict(path)]
+    
+    for ffile in files :
+        if not ffile[0] == '.' :
+            path = os.path.join(root, ffile)
+            if check_path(path):
+                contents += [file_to_dict(path)]
+
     return json.dumps(contents, indent=4, encoding='utf-8')
 
 

@@ -35,26 +35,26 @@ class Root():
         print "cool"
     tester.exposed = True
 
-    def getfile(self, fpath, cb):
+    def media(self, fpath, cb):
         cherrypy.response.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
         cherrypy.response.headers['Pragma'] = "no-cache"
         cherrypy.response.headers['Expires'] = "0"
         src = file_operations.BASE_DIR + fpath
         return static.serve_file(src)
-    getfile.exposed = True
+    media.exposed = True
 
-    def getdl(self, fpath, cb):
+    def download(self, fpath, cb):
         src = file_operations.BASE_DIR + fpath
         dl = open(src, 'r').read()
         fname = os.path.basename(fpath)
         cherrypy.response.headers['content-type']        = 'application/octet-stream'
         cherrypy.response.headers['content-disposition'] = 'attachment; filename={}'.format(fname)
         return dl
-    getdl.exposed = True
+    download.exposed = True
 
-    def upload(self, nid, **fdata):
+    def upload(self, dst, **fdata):
         upload = fdata['files[]']
-        folder = nid
+        folder = dst
         filename = upload.filename
         size = 0
         with open(file_operations.BASE_DIR + folder + '/' + filename, 'wb') as newfile:
@@ -75,23 +75,23 @@ class Root():
         if 'operation' in data :
             cherrypy.response.headers['Content-Type'] = "application/json"
             if data['operation'] == 'get_node' :
-                return file_operations.get_node(data['id'])
+                return file_operations.get_node(data['path'])
             if data['operation'] == 'create_node' :
-                return file_operations.create(data['id'], data['text'])
+                return file_operations.create(data['path'], data['name'])
             if data['operation'] == 'rename_node' :
-                return file_operations.rename(data['id'], data['text'])
+                return file_operations.rename(data['path'], data['name'])
             if data['operation'] == 'delete_node' :
-                return file_operations.delete(data['id'])
+                return file_operations.delete(data['path'])
             if data['operation'] == 'move_node' :
-                return file_operations.move(data['id'], data['parent'])
+                return file_operations.move(data['src'], data['dst'])
             if data['operation'] == 'copy_node' :
-                return file_operations.copy(data['id'], data['parent'])
+                return file_operations.copy(data['src'], data['dst'])
             if data['operation'] == 'unzip_node' :
-                return file_operations.unzip(data['id'])
+                return file_operations.unzip(data['path'])
             if data['operation'] == 'download_node' :
-                return file_operations.download(data['id'])
+                return file_operations.download(data['path'])
             if data['operation'] == 'zip_node' :
-                return file_operations.zip(data['id'])
+                return file_operations.zip(data['path'])
               
         else :
             cherrypy.response.headers['Content-Type'] = "application/json"

@@ -8,7 +8,7 @@ var clipboard = {};
 // is there an event we can use rather than having to explictly call it everytime?
 function refreshWorkingDir(){
 	detachPlayer();
-    $.get(fsurl+'?operation=get_node', { 'id' : workingDir})
+    $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
         renderFilesTable(d);
         renderBreadcrumb();
@@ -46,8 +46,6 @@ function selectedIsOneFile(){
     else return false;
 }
 
-// TODO nodes from server have different attr names than nodes selected, should be same
-// might need to change server 'id' to 'path' is all
 function nodeNameWithIcon(path, type){
     var basename = path.split('/').pop();
     console.log(type);
@@ -68,19 +66,19 @@ function renderFilesTable(d){
     $("#ftable").empty();
     var path = '';
     d.forEach(function(c){
-        var basename = c.id.split('/').pop();
+        var basename = c.path.split('/').pop();
         if (c.type == 'folder'){
             var trow = $('<tr class="fsdir">');
             var tdata = $('<td class="fsdirname"><span class="gspacer" /></td>');
-            tdata.append(nodeNameWithIcon(c.id, c.type));
+            tdata.append(nodeNameWithIcon(c.path, c.type));
         } else {
             var trow = $('<tr class="fsfile">');
             var tdata = $('<td class="fsfilename">');
-            var dlButton = $('<a class="dl-but" href="'+appBaseURL+'/getdl?fpath='+encodeURIComponent(c.id)+'&cb=cool"><span class="glyphicon glyphicon-download-alt"></span></a>');
+            var dlButton = $('<a class="dl-but" href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool"><span class="glyphicon glyphicon-download-alt"></span></a>');
             tdata.append(dlButton);
-            tdata.append(nodeNameWithIcon(c.id, c.type));
+            tdata.append(nodeNameWithIcon(c.path, c.type));
         }
-        trow.data("path", c.id);
+        trow.data("path", c.path);
         trow.data("type", c.type);
         var checkbox = $('<td><div class="checkbox"><input type="checkbox" value=""></div></td>');
         trow.append(checkbox);
@@ -93,14 +91,17 @@ function renderFilesTable(d){
 
 function renderBreadcrumb () {
     $("#fsbreadcrumb").empty();
-    var absPath = '/';
-    var breadelement = $('<li class="fsdir"><a href="#">USB Drive</a></li>');
+    var absPath = '';
+    var breadelement = $('<li class="fsdir"><a href="#">Organelle</a></li>');
     breadelement.data("path", absPath);
     $("#fsbreadcrumb").append(breadelement);
     path = workingDir.split('/');
     path.forEach(function(p) {
         if (p) {
-            absPath += '/' + p;
+            absPath +=  p + '/';
+            //TODO fix this so dumb
+            if (p == 'sdcard') p = 'SD Card';
+            if (p == 'usbdrive') p = 'USB Drive';
             var breadelement = $('<li class="fsdir"><a href="#">' + p + '</a></li>');
             breadelement.data("path", absPath);
             $("#fsbreadcrumb").append(breadelement);
@@ -143,8 +144,8 @@ $(function () {
         url: appBaseURL + '/upload',
         dataType: 'json',
         formData: function() {
-            return [{'name':'nid', 'value':getWorkingDir()}];
-        },//{'nid': 'asdf'},
+            return [{'name':'dst', 'value':getWorkingDir()}];
+        },
         done: function (e, data) {
             $.each(data.result.files, function (index, file) {
                 //$('<p/>').text(file.name).appendTo('#files');
@@ -173,7 +174,7 @@ $(function () {
     $("#confirm-new-folder").click(function(){
         // TODO don't change global ajax (it is deprecated anyway)
         $.ajaxSetup({async: false});
-        $.get(fsurl+'?operation=create_node', { 'id' : workingDir, 'text' : $('#new-folder-name').val() })
+        $.get(fsurl+'?operation=create_node', { 'path' : workingDir, 'name' : $('#new-folder-name').val() })
         .done(function () {
             console.log('created 1');
         })
@@ -208,7 +209,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
-        $.get(fsurl+'?operation=rename_node', { 'id' : n.path, 'text' : $('#rename-text').val() })
+        $.get(fsurl+'?operation=rename_node', { 'path' : n.path, 'name' : $('#rename-text').val() })
         .done(function () {
             console.log('renamed 1');
         })
@@ -271,7 +272,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = clipboard.nodes;
         selectedNodes.forEach(function(n) {
-            $.get(fsurl+'?operation=move_node', { 'id' : n.path, 'parent' : workingDir })
+            $.get(fsurl+'?operation=move_node', { 'src' : n.path, 'dst' : workingDir })
             .done(function () {
                 console.log('moved 1');
             })
@@ -294,7 +295,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = clipboard.nodes;
         selectedNodes.forEach(function(n) {
-            $.get(fsurl+'?operation=copy_node', { 'id' : n.path, 'parent' : workingDir })
+            $.get(fsurl+'?operation=copy_node', { 'src' : n.path, 'dst' : workingDir })
             .done(function () {
                 console.log('copied 1');
             })
@@ -325,7 +326,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = getSelectedNodes();
         selectedNodes.forEach(function(n) {
-            $.get(fsurl+'?operation=delete_node', { 'id' : n.path })
+            $.get(fsurl+'?operation=delete_node', { 'path' : n.path })
             .done(function () {
                 console.log('deleted 1');
             })
@@ -368,7 +369,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
-        $.get(fsurl+'?operation=zip_node', { 'id' : n.path })
+        $.get(fsurl+'?operation=zip_node', { 'path' : n.path })
         .done(function () {
             console.log('zipped 1');
         })
@@ -413,7 +414,7 @@ $(function () {
         $.ajaxSetup({async: false});
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
-        $.get(fsurl+'?operation=unzip_node', { 'id' : n.path })
+        $.get(fsurl+'?operation=unzip_node', { 'path' : n.path })
         .done(function () {
             console.log('unzipped 1');
         })
@@ -434,7 +435,7 @@ $(function () {
         //console.log(target);
         if (!target.is("input")) {
             workingDir = $(this).data("path");
-            $.get(fsurl+'?operation=get_node', { 'id' : $(this).data("path")})
+            $.get(fsurl+'?operation=get_node', { 'path' : $(this).data("path")})
             .done(function (d) {
                 renderFilesTable(d);
                 renderBreadcrumb(d); 
@@ -463,20 +464,7 @@ $(function () {
         }
     });
 
-
-    /*$('body').on('click', '.fsdirbc', function() {
-        workingDir = $(this).data("path");
-        $.get(fsurl+'?operation=get_node', { 'id' : $(this).data("path")})
-        .done(function (d) {
-            renderFilesTable(d);
-            renderBreadcrumb(d); 
-        })
-        .fail(function () {
-            console.log('oops');
-        });
-    });*/
-
-    $.get(fsurl+'?operation=get_node', { 'id' : '/'})
+    $.get(fsurl+'?operation=get_node', { 'path' : '/'})
     .done(function (d) {
         renderFilesTable(d);
         renderBreadcrumb();
@@ -513,10 +501,7 @@ function loadFile(filename) {
 
     $("#jquery_jplayer_1").jPlayer("clearMedia");
             $("#jquery_jplayer_1").jPlayer("setMedia", {
-                        //wav: "http://thepeacetreaty.org/sounds/kaleidoloops/"+col+"/"+name
-                        //wav: "http://thepeacetreaty.org/sounds/kaleidoloops/"+col+"/"+name
-                        wav: appBaseURL + "/getfile?fpath=" + encodeURIComponent(filename) + "&cb="+ new Date().getTime()
-                        //wav: "./soundfiles/wavs/" + name + ".wav"
+                        wav: appBaseURL + "/media?fpath=" + encodeURIComponent(filename) + "&cb="+ new Date().getTime()
             });
 
     //console.log(encodeURIComponent(filename));

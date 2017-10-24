@@ -11,7 +11,7 @@ cherrypy.config.update({    'environment': 'production',
                             'log.error_file': '/tmp/site.log',
                             'log.screen': True,
                             'server.socket_host': '0.0.0.0',
-                            'server.socket_port': 8080,
+                            'server.socket_port': 80,
                         })
 # load apps
 print "loading apps..."
