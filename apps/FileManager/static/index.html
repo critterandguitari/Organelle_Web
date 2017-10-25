@@ -62,8 +62,11 @@
     .gspacer{
         padding: .8em;
     }
+    #action-buts {
+        margin-top: 1em;
+    }
     .breadcrumb {
-        /*display: inline;*/
+        display: inline;
         margin-top: 1em;
     }
 </style>
@@ -283,23 +286,33 @@
 		</div>
 
         <div id="control-panel">
-            <button id="cut-but" type="button" class="btn btn-default">Cut</button>
-            <button id="copy-but" type="button" class="btn btn-default">Copy</button>
-            <button id="paste-but" type="button" class="btn btn-default">Paste</button>
-            <button id="rename-but" type="button" class="btn btn-default">Rename</button>
-            <label class="btn btn-default btn-file">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
-            <button id="zip-but" type="button" class="btn btn-default">Zip</button>
-            <button id="unzip-but" type="button" class="btn btn-default">Unzip</button>
-            <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
-            <button id="delete-but" type="button" class="btn btn-danger">Delete</button>
-
-            <br />
-            <br />
             <button id="sd-sel-but" type="button" class="btn btn-default">SD Card</button>
             <button id="usb-sel-but" type="button" class="btn btn-default">USB Drive</button>
-            <ul class="breadcrumb" id="fsbreadcrumb">
-            </ul>
-       </div>
+            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
+            <div id="action-buts">
+                <button id="cut-but" type="button" class="btn btn-default">Cut</button>
+                <button id="copy-but" type="button" class="btn btn-default">Copy</button>
+                <button id="paste-but" type="button" class="btn btn-default">Paste</button>
+                <button id="rename-but" type="button" class="btn btn-default">Rename</button>
+                <label class="btn btn-default btn-file">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
+                <button id="zip-but" type="button" class="btn btn-default">Zip</button>
+                <button id="unzip-but" type="button" class="btn btn-default">Unzip</button>
+                <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
+                <button id="delete-but" type="button" class="btn btn-danger">Delete</button>
+            
+                 <!--button id="cut-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-scissors"></button>
+                <button id="copy-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-copy"></span></button>
+                <button id="paste-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-paste"></button>
+                <button id="rename-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-copy">Rename</button>
+                <label class="btn btn-default btn-file"><span class="glyphicon glyphicon-upload"><input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
+                <button id="zip-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-copy">Zip</button>
+                <button id="unzip-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-copy">Unzip</button>
+                <button id="new-folder-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-folder-close"></button>
+                <button id="delete-but" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></button-->
+            
+            </div>
+            <br />
+        </div>
 
         <div id="files-table" class="pre-scrollable">
             <table class="table table-striped table-hover">
