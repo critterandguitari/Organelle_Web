@@ -64,14 +64,13 @@
     }
     #dir-actions {
         display: inline;
-        float: right;
+        /*float: right;*/
     }
     #ff-actions {
         display:none;
         margin-top:.8em;
     }
     .breadcrumb {
-        display: inline;
         margin-top: 1em;
     }
 </style>
@@ -293,13 +292,10 @@
         <div id="control-panel">
             <button id="sd-sel-but" type="button" class="btn btn-default">SD Card</button>
             <button id="usb-sel-but" type="button" class="btn btn-default">USB Drive</button>
-            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
             <div id="dir-actions">
-                <label class="btn btn-default btn-file">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
-                <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
-            </div>
-            <br />
-            <div id="ff-actions">
+                &nbsp; 
+                &nbsp; 
+                &nbsp; 
                 <button id="cut-but" type="button" class="btn btn-default">Cut</button>
                 <button id="copy-but" type="button" class="btn btn-default">Copy</button>
                 <button id="paste-but" type="button" class="btn btn-default">Paste</button>
@@ -308,6 +304,15 @@
                 <button id="unzip-but" type="button" class="btn btn-default">Unzip</button>
                 <button id="delete-but" type="button" class="btn btn-danger">Delete</button>
                 &nbsp; 
+                &nbsp; 
+                &nbsp; 
+
+                <label class="btn btn-default btn-file">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
+                <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
+            </div>
+            <br />
+            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
+            <div id="ff-actions-nope">
            
                  <!--button id="cut-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-scissors"></button>
                 <button id="copy-but" type="button" class="btn btn-default"><span class="glyphicon glyphicon-copy"></span></button>

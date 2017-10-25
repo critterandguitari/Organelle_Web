@@ -57,7 +57,6 @@ def unzip(zip_path):
 def zip(folder):
     folder = BASE_DIR + folder
     zipname = os.path.basename(folder)+".zip"
-    zipname = check_and_inc_name(zipname)
     if os.path.isdir(folder) :
         os.system("cd \""+os.path.dirname(folder)+"\" && zip -r \""+zipname+"\" \""+os.path.basename(folder)+"\"")
     return '{"ok":"ok"}'
