@@ -17,7 +17,7 @@ function refreshWorkingDir(){
     .fail(function () {
         console.log('problem refreshing');
     });   
-    $("#ff-actions").hide()
+    $("#ff-actions").slideUp()
 }
 
 function getWorkingDir() {
@@ -185,8 +185,8 @@ $(function () {
     // ff actions if > 0
     $("#files-table").click(function(){
         var total=$("#files-table").find('input:checked').length;
-        if (total > 0) $("#ff-actions").show();
-        else $("#ff-actions").hide();
+        if (total > 0) $("#ff-actions").slideDown();
+        else $("#ff-actions").slideUp();
     });
 
 
