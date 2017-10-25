@@ -1,7 +1,8 @@
 
 var appBaseURL = '/files'
 var fsurl = appBaseURL + '/fmdata'
-var workingDir = '';
+var workingDir = '/usbdrive/';
+var baseDirLabel = 'USB Drive';
 var clipboard = {};
 
 // TODO  really anytime the table view changes we want to first call detachPlayer.  
@@ -16,8 +17,6 @@ function refreshWorkingDir(){
     .fail(function () {
         console.log('problem refreshing');
     });    
-    // empty clipboard
-    clipboard = {};
 }
 
 function getWorkingDir() {
@@ -93,14 +92,17 @@ function renderFilesTable(d){
 function renderBreadcrumb () {
     $("#fsbreadcrumb").empty();
     var absPath = '';
-    var breadelement = $('<li class="fsdir"><a href="#"></a></li>');
-    breadelement.data("path", absPath);
-    $("#fsbreadcrumb").append(breadelement);
+    // NOTE hack for removing base dir and replacing with SD CARD or USB DRIVE for Organelle
+    //var breadelement = $('<li class="fsdir"><a href="#">'+baseDirLabel+'</a></li>');
+    //breadelement.data("path", absPath);
+   // $("#fsbreadcrumb").append(breadelement);
     path = workingDir.split('/');
+    var count = 0;
     path.forEach(function(p) {
         if (p) {
             absPath +=  p + '/';
-            var breadelement = $('<li class="fsdir"><a href="#">' + p + '</a></li>');
+            if (count == 0) var breadelement = $('<li class="fsdir"><a href="#">' + baseDirLabel + '</a></li>');
+            else var breadelement = $('<li class="fsdir"><a href="#">' + p + '</a></li>');
             breadelement.data("path", absPath);
             $("#fsbreadcrumb").append(breadelement);
         }
@@ -166,35 +168,15 @@ $(function () {
     });
 
     $("#usb-sel-but").click(function(){
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
-        workingDir = '/';
-        $.get(fsurl+'?operation=set_base_dir', { 'path' : '/usbdrive/'})
-        .done(function () {
-            console.log('changing to usb');
-        })
-        .fail(function () {
-            console.log('problem setting base dir');
-        });
-        console.log('going to refresh');
+        baseDirLabel = 'USB Drive';
+        workingDir = '/usbdrive/';
         refreshWorkingDir();
-        $.ajaxSetup({async: true});
     });
 
     $("#sd-sel-but").click(function(){
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
-        workingDir = '/';
-        $.get(fsurl+'?operation=set_base_dir', { 'path' : '/sdcard/'})
-        .done(function () {
-            console.log('changing to sd');
-        })
-        .fail(function () {
-            console.log('problem setting base dir');
-        });
-        console.log('going to refresh');
+        baseDirLabel = 'SD Card';
+        workingDir = '/sdcard/';
         refreshWorkingDir();
-        $.ajaxSetup({async: true});
     });
 
 
@@ -495,7 +477,7 @@ $(function () {
         }
     });
 
-    $.get(fsurl+'?operation=get_node', { 'path' : '/'})
+    $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
         renderFilesTable(d);
         renderBreadcrumb();
