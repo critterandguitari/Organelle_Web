@@ -16,7 +16,8 @@ function refreshWorkingDir(){
     })
     .fail(function () {
         console.log('problem refreshing');
-    });    
+    });   
+    $("#ff-actions").hide()
 }
 
 function getWorkingDir() {
@@ -80,7 +81,7 @@ function renderFilesTable(d){
         }
         trow.data("path", c.path);
         trow.data("type", c.type);
-        var checkbox = $('<td><div class="checkbox"><input type="checkbox" value=""></div></td>');
+        var checkbox = $('<td><div class="checkbox ff-select"><input type="checkbox" value=""></div></td>');
         trow.append(checkbox);
         trow.append(tdata);
         trow.append('<td>'+c.type+'</td>');
@@ -103,6 +104,7 @@ function renderBreadcrumb () {
             absPath +=  p + '/';
             if (count == 0) var breadelement = $('<li class="fsdir"><a href="#">' + baseDirLabel + '</a></li>');
             else var breadelement = $('<li class="fsdir"><a href="#">' + p + '</a></li>');
+            count++;
             breadelement.data("path", absPath);
             $("#fsbreadcrumb").append(breadelement);
         }
@@ -177,6 +179,14 @@ $(function () {
         baseDirLabel = 'SD Card';
         workingDir = '/sdcard/';
         refreshWorkingDir();
+    });
+
+    // any time the table is clicked on, check number selected and display 
+    // ff actions if > 0
+    $("#files-table").click(function(){
+        var total=$("#files-table").find('input:checked').length;
+        if (total > 0) $("#ff-actions").show();
+        else $("#ff-actions").hide();
     });
 
 
@@ -448,14 +458,7 @@ $(function () {
         //console.log(target);
         if (!target.is("input")) {
             workingDir = $(this).data("path");
-            $.get(fsurl+'?operation=get_node', { 'path' : $(this).data("path")})
-            .done(function (d) {
-                renderFilesTable(d);
-                renderBreadcrumb(d); 
-            })
-            .fail(function () {
-                console.log('oops');
-            });
+            refreshWorkingDir();
         }
     });
 
