@@ -12,6 +12,16 @@ def check_path(path) :
     if path.startswith("/usbdrive") or path.startswith("/sdcard") : return True
     else : return False
 
+def check_and_inc_name(path) :
+    newpath = path
+    count = 2
+    while os.path.isdir(newpath) or os.path.isfile(newpath):
+        p, e = os.path.splitext(path)
+        newpath = p + " " + str(count) + e
+        count += 1
+
+    return newpath
+
 #TODO don't return ok if error what the hell
 def set_base_dir(path) :
     global BASE_DIR
@@ -19,18 +29,22 @@ def set_base_dir(path) :
 
 def rename(old, new):
     src = BASE_DIR + old 
-    dst =os.path.dirname(src) + '/' + new
-    os.rename(src, dst)
+    dst = os.path.dirname(src) + '/' + new
+    if src != dst :
+        dst = check_and_inc_name(dst)
+        os.rename(src, dst)
     return '{"ok":"ok"}'
 
 def create(dst, name):
-    location = BASE_DIR + dst 
-    os.mkdir(location + '/' + name)
+    dst = BASE_DIR + dst + '/' + name
+    dst = check_and_inc_name(dst)
+    os.mkdir(dst)
     return '{"ok":"ok"}'
 
 def move(src, dst):
     src = BASE_DIR + src
-    dst = BASE_DIR + dst 
+    dst = BASE_DIR + dst + '/' + os.path.basename(src)  
+    dst = check_and_inc_name(dst)
     shutil.move(src, dst)
     return '{"ok":"ok"}'
 
@@ -42,18 +56,21 @@ def unzip(zip_path):
 
 def zip(folder):
     folder = BASE_DIR + folder
+    zipname = os.path.basename(folder)+".zip"
+    zipname = check_and_inc_name(zipname)
     if os.path.isdir(folder) :
-        os.system("cd \""+path.dirname(folder)+"\" && zip -r \""+path.basename(folder)+".zip\" \""+path.basename(folder)+"\"")
+        os.system("cd \""+os.path.dirname(folder)+"\" && zip -r \""+zipname+"\" \""+os.path.basename(folder)+"\"")
     return '{"ok":"ok"}'
 
 def copy(src, dst):
     src = BASE_DIR + src
     dst = BASE_DIR + dst 
-    dstfinal = dst + '/' + os.path.basename(src)
+    dst = dst + '/' + os.path.basename(src)
+    dst = check_and_inc_name(dst)
     if os.path.isfile(src) :
         shutil.copy(src, dst)
     if os.path.isdir(src) :
-        shutil.copytree(src, dstfinal)
+        shutil.copytree(src, dst)
     return '{"ok":"ok"}'
 
 def delete(src):
@@ -71,11 +88,19 @@ def get_node(fpath):
         fpath = fpath
         return get_files(BASE_DIR + fpath)
 
+def convert_bytes(num):
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if num < 1024.0:
+            if x == 'bytes' : return "%d %s" % (int(num), x)
+            else : return "%3.1f %s" % (num, x)
+        num /= 1024.0
+
 def file_to_dict(fpath):
     return {
         'name': os.path.basename(fpath),
         'children': False,
         'type': 'file',
+        'size': str(convert_bytes(os.stat(fpath).st_size)), 
         'path': fpath.split(BASE_DIR,1)[1],
         }
 

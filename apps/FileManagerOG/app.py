@@ -57,15 +57,18 @@ class Root():
         folder = dst
         filename = upload.filename
         size = 0
-        with open(file_operations.BASE_DIR + folder + '/' + filename, 'wb') as newfile:
+        filepath = file_operations.BASE_DIR + folder + '/' + filename 
+        filepath = file_operations.check_and_inc_name(filepath)
+        with open(filepath, 'wb') as newfile:
             while True:
                 data = upload.file.read(8192)
                 if not data:
                     break
                 size += len(data)
                 newfile.write(data)
+        print "saved file, size: " + str(size)
         cherrypy.response.headers['Content-Type'] = "application/json"
-        return '{"files":[{"name":"x","size":1,"url":"na","thumbnailUrl":"na","deleteUrl":"na","deleteType":"DELETE"}]}'
+        return '{"files":[{"name":"x","size":'+str(size)+',"url":"na","thumbnailUrl":"na","deleteUrl":"na","deleteType":"DELETE"}]}'
         
     upload.exposed = True
   
