@@ -5,6 +5,7 @@ import cherrypy
 
 BASE_DIR = "/"
 
+#TODO check all the paths here 
 def check_path(path) :
     path = os.path.normpath(path)
     print path
@@ -12,6 +13,10 @@ def check_path(path) :
     else : return False
 
 #TODO don't return ok if error what the hell
+def set_base_dir(path) :
+    global BASE_DIR
+    BASE_DIR = path
+
 def rename(old, new):
     src = BASE_DIR + old 
     dst =os.path.dirname(src) + '/' + new
@@ -86,20 +91,21 @@ def get_files(rootpath):
     root, folders, files = os.walk(rootpath).next()
     contents = []
 
+    # some reason root is // when rootpath is /, fix it
     if root == "//" : root = "/"
 
     # add to the list if they are cool
     for folder in folders :
         if not folder[0] == '.' :
             path = os.path.join(root, folder)
-            if check_path(path):
-                contents += [folder_to_dict(path)]
+            #if check_path(path):
+            contents += [folder_to_dict(path)]
     
     for ffile in files :
         if not ffile[0] == '.' :
             path = os.path.join(root, ffile)
-            if check_path(path):
-                contents += [file_to_dict(path)]
+            #if check_path(path):
+            contents += [file_to_dict(path)]
 
     return json.dumps(contents, indent=4, encoding='utf-8')
 

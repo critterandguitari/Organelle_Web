@@ -74,6 +74,8 @@ class Root():
         ret = ''
         if 'operation' in data :
             cherrypy.response.headers['Content-Type'] = "application/json"
+            if data['operation'] == 'set_base_dir' :
+                return file_operations.set_base_dir(data['path'])
             if data['operation'] == 'get_node' :
                 return file_operations.get_node(data['path'])
             if data['operation'] == 'create_node' :

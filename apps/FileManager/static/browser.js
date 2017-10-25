@@ -48,6 +48,7 @@ function selectedIsOneFile(){
 
 function nodeNameWithIcon(path, type){
     var basename = path.split('/').pop();
+
     console.log(type);
     if (type == "file"){
         var extension = basename.split('.').pop();
@@ -92,16 +93,13 @@ function renderFilesTable(d){
 function renderBreadcrumb () {
     $("#fsbreadcrumb").empty();
     var absPath = '';
-    var breadelement = $('<li class="fsdir"><a href="#">Organelle</a></li>');
+    var breadelement = $('<li class="fsdir"><a href="#"></a></li>');
     breadelement.data("path", absPath);
     $("#fsbreadcrumb").append(breadelement);
     path = workingDir.split('/');
     path.forEach(function(p) {
         if (p) {
             absPath +=  p + '/';
-            //TODO fix this so dumb
-            if (p == 'sdcard') p = 'SD Card';
-            if (p == 'usbdrive') p = 'USB Drive';
             var breadelement = $('<li class="fsdir"><a href="#">' + p + '</a></li>');
             breadelement.data("path", absPath);
             $("#fsbreadcrumb").append(breadelement);
@@ -166,6 +164,39 @@ $(function () {
         refreshWorkingDir()
         console.log(data);
     });
+
+    $("#usb-sel-but").click(function(){
+        // TODO don't change global ajax (it is deprecated anyway)
+        $.ajaxSetup({async: false});
+        workingDir = '/';
+        $.get(fsurl+'?operation=set_base_dir', { 'path' : '/usbdrive/'})
+        .done(function () {
+            console.log('changing to usb');
+        })
+        .fail(function () {
+            console.log('problem setting base dir');
+        });
+        console.log('going to refresh');
+        refreshWorkingDir();
+        $.ajaxSetup({async: true});
+    });
+
+    $("#sd-sel-but").click(function(){
+        // TODO don't change global ajax (it is deprecated anyway)
+        $.ajaxSetup({async: false});
+        workingDir = '/';
+        $.get(fsurl+'?operation=set_base_dir', { 'path' : '/sdcard/'})
+        .done(function () {
+            console.log('changing to sd');
+        })
+        .fail(function () {
+            console.log('problem setting base dir');
+        });
+        console.log('going to refresh');
+        refreshWorkingDir();
+        $.ajaxSetup({async: true});
+    });
+
 
     $("#new-folder-but").click(function(){
         $('#new-folder-modal').modal('show');
