@@ -146,7 +146,9 @@ $(function () {
 
     // button actions
     $('#fileupload').fileupload({
-        url: appBaseURL + '/upload',
+		// DISABLE drag and drop uploading
+       	dropZone: null,  
+		url: appBaseURL + '/upload',
         dataType: 'json',
         formData: function() {
             return [{'name':'dst', 'value':getWorkingDir()}];
@@ -172,6 +174,10 @@ $(function () {
         console.log(data);
     });
 
+	$(document).bind('drop dragover', function (e) {
+		e.preventDefault();
+	});
+
     $("#usb-sel-but").click(function(){
         baseDirLabel = 'USB Drive';
         workingDir = '/usbdrive/';
@@ -191,7 +197,6 @@ $(function () {
         if (total > 0) $("#ff-actions").slideDown();
         /*else $("#ff-actions").slideUp();*/
     });
-
 
     $("#new-folder-but").click(function(){
         $('#new-folder-modal').modal('show');

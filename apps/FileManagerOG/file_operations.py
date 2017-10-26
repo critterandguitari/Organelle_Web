@@ -118,6 +118,8 @@ def get_files(rootpath):
     # some reason root is // when rootpath is /, fix it
     if root == "//" : root = "/"
 
+    folders = sorted(folders, key=lambda s: s.lower())
+    files = sorted(files, key=lambda s: s.lower())
     # add to the list if they are cool
     for folder in folders :
         if not folder[0] == '.' :
@@ -131,6 +133,7 @@ def get_files(rootpath):
             #if check_path(path):
             contents += [file_to_dict(path)]
 
+    #print json.dumps(contents, indent=4, encoding='utf-8')
     return json.dumps(contents, indent=4, encoding='utf-8')
 
 
