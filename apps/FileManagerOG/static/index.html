@@ -21,7 +21,11 @@
 		<!-- The player -->
         <link href="./assets/jplayer.simple.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="./assets/jquery.jplayer.js"></script>
+        
+        <!-- The overlay -->
         <script type="text/javascript" src="./assets/loadingoverlay.js"></script>
+
+
 
 <style type="text/css">
     body{
@@ -47,6 +51,10 @@
         margin-top: 1em;
         margin-bottom: 1em;
         white-space: nowrap;
+    }
+    #spinner{
+        display:none;
+        float:right;
     }
     #files-table {
     	padding: 6px;
@@ -127,7 +135,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Uzip</h4>
+                        <h4 class="modal-title">Uzip </h4>
                     </div>
                     <div class="modal-body">
                         <div id="unzip-modal-msg"></div>
@@ -310,6 +318,9 @@
 
                 <label class="btn btn-default btn-file">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
                 <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
+                &nbsp; 
+                &nbsp; 
+                <img id="spinner" height=24 src="./assets/loading.gif"></img>
             </div>
             <br />
             <ul class="breadcrumb" id="fsbreadcrumb"></ul>

@@ -122,11 +122,17 @@ function SetHeight(){
 
 $(window).resize(SetHeight);
 
+$(document).ajaxStart(function(){
+	$.LoadingOverlay("show", {
+    	fade  : [50, 50]
+	});
+});
+$(document).ajaxStop(function(){
+    $.LoadingOverlay("hide");
+});
+
 $(function () {
 
-   // $.ajaxSetup({
-   //       async: false
-   // });
 	$(document).ready(SetHeight);
 	$(window).resize(SetHeight);
     
@@ -195,7 +201,6 @@ $(function () {
     $("#files-table").click(function(){
         var total=$("#files-table").find('input:checked').length;
         if (total > 0) $("#ff-actions").slideDown();
-        /*else $("#ff-actions").slideUp();*/
     });
 
     $("#new-folder-but").click(function(){
@@ -203,19 +208,15 @@ $(function () {
     });
 
     $("#confirm-new-folder").click(function(){
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#new-folder-modal').modal('hide');
         $.get(fsurl+'?operation=create_node', { 'path' : workingDir, 'name' : $('#new-folder-name').val() })
         .done(function () {
             console.log('created 1');
+        	refreshWorkingDir();
         })
         .fail(function () {
             console.log('problem creating folder');
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
-        $('#new-folder-modal').modal('hide');
-        $.ajaxSetup({async: true});
     });
 
 
@@ -236,22 +237,18 @@ $(function () {
     });
 
     $("#confirm-rename").click(function(){
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#rename-modal').modal('hide');
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
         $.get(fsurl+'?operation=rename_node', { 'path' : n.path, 'name' : $('#rename-text').val() })
         .done(function () {
             console.log('renamed 1');
+        	refreshWorkingDir();
         })
         .fail(function () {
             console.log('problem moving');
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
         clipboard = {};
-        $('#rename-modal').modal('hide');
-        $.ajaxSetup({async: true});
     });
 
     $("#copy-but").click(function(){
@@ -297,48 +294,35 @@ $(function () {
 
     $("#confirm-move").click(function(){
       
-        console.log('about to cut');
-
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#move-modal').modal('hide');
         var selectedNodes = clipboard.nodes;
         selectedNodes.forEach(function(n) {
             $.get(fsurl+'?operation=move_node', { 'src' : n.path, 'dst' : workingDir })
             .done(function () {
                 console.log('moved 1');
+				refreshWorkingDir();
             })
             .fail(function () {
                 console.log('problem moving');
             });
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
         clipboard = {};
-        $('#move-modal').modal('hide');
-        $.ajaxSetup({async: true});
     });
 
     $("#confirm-copy").click(function(){
-      
-        console.log('about to copy');
-
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#copy-modal').modal('hide');
         var selectedNodes = clipboard.nodes;
         selectedNodes.forEach(function(n) {
             $.get(fsurl+'?operation=copy_node', { 'src' : n.path, 'dst' : workingDir })
             .done(function () {
                 console.log('copied 1');
+        		refreshWorkingDir();
             })
             .fail(function () {
                 console.log('problem copying');
             });
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
         clipboard = {};
-        $('#copy-modal').modal('hide');
-        $.ajaxSetup({async: true});
     });
 
     $("#delete-but").click(function(){
@@ -351,25 +335,18 @@ $(function () {
     });
 
     $("#confirm-delete").click(function(){
-        console.log('about to delete');
-
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#del-modal').modal('hide');
         var selectedNodes = getSelectedNodes();
         selectedNodes.forEach(function(n) {
             $.get(fsurl+'?operation=delete_node', { 'path' : n.path })
             .done(function () {
                 console.log('deleted 1');
+        		refreshWorkingDir();
             })
             .fail(function () {
                 console.log('problem deleting');
             });
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
-        $('#del-modal').modal('hide');
-        
-        $.ajaxSetup({async: true});
     });
 
     $("#zip-but").click(function(){
@@ -394,27 +371,18 @@ $(function () {
     });
 
     $("#confirm-zip").click(function(){
-        console.log('about to zip');
-
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#zip-modal').modal('hide');
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
-        $.get(fsurl+'?operation=zip_node', { 'path' : n.path })
+		$.get(fsurl+'?operation=zip_node', { 'path' : n.path })
         .done(function () {
             console.log('zipped 1');
+        	refreshWorkingDir();
         })
         .fail(function () {
             console.log('problem zipping');
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
-        $('#zip-modal').modal('hide');
-        
-        $.ajaxSetup({async: true});
     });
-
-
 
     $("#unzip-but").click(function(){
         var selectedNodes = getSelectedNodes();
@@ -439,31 +407,22 @@ $(function () {
     });
 
     $("#confirm-unzip").click(function(){
-        console.log('about to unzip');
-
-        // TODO don't change global ajax (it is deprecated anyway)
-        $.ajaxSetup({async: false});
+        $('#unzip-modal').modal('hide');
         var selectedNodes = getSelectedNodes();
         n = selectedNodes[0];
         $.get(fsurl+'?operation=unzip_node', { 'path' : n.path })
         .done(function () {
-            console.log('unzipped 1');
+ 	        console.log('unzipped 1 going to refresh');
+        	refreshWorkingDir();
         })
         .fail(function () {
             console.log('problem unzipping');
         });
-        console.log('going to refresh');
-        refreshWorkingDir();
-        $('#unzip-modal').modal('hide');
-        
-        $.ajaxSetup({async: true});
     });
-
 
     // click on directory table row, excluding input elements
     $('body').on('click', '.fsdir', function(event) {
         var target = $(event.target);
-        //console.log(target);
         if (!target.is("input")) {
             workingDir = $(this).data("path");
             refreshWorkingDir();
@@ -474,13 +433,10 @@ $(function () {
     $('body').on('click', '.fsfile', function(event) {
         var target = $(event.target);
         var clickOnPlayer = ($("#jp_container_1").has(event.target).length > 0)
-        //console.log(clickOnPlayer);
         if (!target.is("input") && !clickOnPlayer) { //TODO how to specify target up the dom
-            //console.log(target);
             var path=$(this).data("path");
             var extension=path.split(".").pop();
             if (extension == "wav"){
-                //console.log($(this.childNodes[1]));
 			    detachPlayer();
                 $(this.childNodes[1]).append(player);
 				loadFile(path);
