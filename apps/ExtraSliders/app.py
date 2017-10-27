@@ -8,6 +8,13 @@ import time
 import socket
 from cherrypy.lib import static
 import imp
+import liblo
+
+try:
+    osc_target = liblo.Address(4000)
+except liblo.AddressError as err:
+    print(err)
+    sys.exit()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,7 +40,7 @@ class Root():
     tester.exposed = True
   
     def control(self, **data):
-        
+        liblo.send(osc_target, "/sliders", int(data["index"]), float(data["value"]))        
         print data
         return 'cool'
 
