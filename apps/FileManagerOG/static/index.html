@@ -4,19 +4,16 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<title>Organelle</title>
-
-		<link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
+		<title>Organelle Patches</title>
         
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+        <link rel="stylesheet" href="./assets/bootstrap.min.css">
+        <script src="./assets/jquery.min.js"></script>
+        <script src="./assets/bootstrap.min.js"></script>
 
 		<!-- The container for the uploaded files -->
-		<script src="assets/vendor/jquery.ui.widget.js"></script>
-		<script src="assets/jquery.iframe-transport.js"></script>
-		<script src="assets/jquery.fileupload.js"></script>
+		<script src="./assets/jquery.ui.widget.js"></script>
+		<!--script src="assets/jquery.iframe-transport.js"></script-->
+		<script src="./assets/jquery.fileupload.js"></script>
 		
 		<!-- The player -->
         <link href="./assets/jplayer.simple.css" rel="stylesheet" type="text/css" />
@@ -52,9 +49,10 @@
         margin-bottom: 1em;
         white-space: nowrap;
     }
-    #spinner{
-        display:none;
+    #home-but{
         float:right;
+        font-size: 1.5em;
+        padding-top: .3em;
     }
     #files-table {
     	padding: 6px;
@@ -323,7 +321,9 @@
                 <button id="new-folder-but" type="button" class="btn btn-default">New Folder</button>
                 &nbsp; 
                 &nbsp; 
-                <img id="spinner" height=24 src="./assets/loading.gif"></img>
+                <a id="home-but" href="/">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a>
             </div>
             <br />
             <ul class="breadcrumb" id="fsbreadcrumb"></ul>
