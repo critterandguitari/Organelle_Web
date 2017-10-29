@@ -124,7 +124,9 @@ $(window).resize(SetHeight);
 
 $(document).ajaxStart(function(){
 	$.LoadingOverlay("show", {
-    	fade  : [50, 50]
+    	fade  : [50, 50],
+        color : "rgba(255, 255, 255, 0)",
+        //image : "./assets/spinner.gif"
 	});
 });
 $(document).ajaxStop(function(){
@@ -173,7 +175,7 @@ $(function () {
         }
     }).prop('disabled', !$.support.fileInput)
     .parent().addClass($.support.fileInput ? undefined : 'disabled');
-    $('#fileupload').bind('fileuploadstart', function (e) {$('#upload-modal').modal('show');});
+    $('#fileupload').bind('fileuploadstart', function (e) {$('#upload-modal').modal({backdrop: false});});
     $('#fileupload').bind('fileuploadstop', function (e, data) {
         $('#upload-modal').modal('hide');
         refreshWorkingDir()
@@ -204,7 +206,7 @@ $(function () {
     });
 
     $("#new-folder-but").click(function(){
-        $('#new-folder-modal').modal('show');
+        $('#new-folder-modal').modal({backdrop: false});
     });
 
     $("#confirm-new-folder").click(function(){
@@ -225,12 +227,12 @@ $(function () {
         if (selectedNodes.length == 1) {
             var path = selectedNodes[0].path;
             var basename = path.split('/').pop();
-            $('#rename-modal').modal('show');
+            $('#rename-modal').modal({backdrop: false});
             $('#rename-text').val(basename);
 
         } 
         else {
-            $('#info-modal').modal('show');
+            $('#info-modal').modal({backdrop: false});
             $('#info-modal-msg').empty();   
             $('#info-modal-msg').append('<p>Choose one item to rename.</p>');   
         }
@@ -267,7 +269,7 @@ $(function () {
         var selectedNodes = clipboard.nodes;
         if (clipboard.nodes && clipboard.nodes.length > 0 ){
             if (clipboard.operation == "copy") {
-                $('#copy-modal').modal('show');
+                $('#copy-modal').modal({backdrop: false});
                 $('#copy-modal-msg').empty();   
                 $('#copy-modal-msg').append('<p>Paste files: </p>');   
                 selectedNodes.forEach(function(n) {
@@ -276,7 +278,7 @@ $(function () {
                 $('#copy-modal-msg').append('<p> to current folder?</p>');   
             }
             else if (clipboard.operation == "cut") {
-                $('#move-modal').modal('show');
+                $('#move-modal').modal({backdrop: false});
                 $('#move-modal-msg').empty();   
                 $('#move-modal-msg').append('<p>Move files: </p>');   
                 selectedNodes.forEach(function(n) {
@@ -286,7 +288,7 @@ $(function () {
             }
         }
         else {
-            $('#info-modal').modal('show');
+            $('#info-modal').modal({backdrop: false});
             $('#info-modal-msg').empty();   
             $('#info-modal-msg').append('<p>Choose files then select Copy or Cut to move.</p>');   
         }
@@ -328,7 +330,7 @@ $(function () {
     $("#delete-but").click(function(){
         var selectedNodes = getSelectedNodes();
         $('#del-node-list').empty();
-        $('#del-modal').modal('show');
+        $('#del-modal').modal({backdrop: false});
         selectedNodes.forEach(function(n) {
             $('#del-node-list').append('<p>').append(nodeNameWithIcon(n.path,n.type));   
         });
@@ -358,13 +360,13 @@ $(function () {
 
             if (selectedNodes[0].type == 'folder') {
                 gotaZip = true;
-                $('#zip-modal').modal('show');
+                $('#zip-modal').modal({backdrop: false});
                 $('#zip-modal-msg').empty();   
                 $('#zip-modal-msg').append('<p>Zip <b>'+basename+'?</b></p>');   
             }
         } 
         if (!gotaZip){
-            $('#info-modal').modal('show');
+            $('#info-modal').modal({backdrop: false});
             $('#info-modal-msg').empty();   
             $('#info-modal-msg').append('<p>Choose one folder to zip.</p>');   
         }
@@ -394,13 +396,13 @@ $(function () {
 
             if (extension == 'zip') {
                 gotaZip = true;
-                $('#unzip-modal').modal('show');
+                $('#unzip-modal').modal({backdrop: false});
                 $('#unzip-modal-msg').empty();   
                 $('#unzip-modal-msg').append('<p>Unzip <b>'+basename+'</b> into current folder?</p>');   
             }
         } 
         if (!gotaZip){
-            $('#info-modal').modal('show');
+            $('#info-modal').modal({backdrop: false});
             $('#info-modal-msg').empty();   
             $('#info-modal-msg').append('<p>Choose one .zip file to unzip.</p>');   
         }
